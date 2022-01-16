@@ -62,7 +62,7 @@ const HowToUseUseCallBack: React.FC = () => {
 
 ### Button2 的渲染过程
 
-由于 `onClick2`在声明时使用了 `useCallback` 方法，会将先前的声明的方法保存至内存中。再次渲染时，会先判断 `useCallback` 方法第二个参数中的依赖是否发生变化，再决定是否需要声明一个新的方法。在点击了 `Button1` 后，参数 `b` 的值没有发生变化， `onClick2` 依然引用上次声明的方法。引用没有发生改变，所以`React.memo` 方法认为 `Button2` 不需要重新渲染。
+由于 `onClick2` 在声明时使用了 `useCallback` 方法，会将先前的声明的方法保存至内存中。再次渲染时，会先判断 `useCallback` 方法第二个参数中的依赖是否发生变化，再决定是否需要声明一个新的方法。在点击了 `Button1` 后，参数 `b` 的值没有发生变化， `onClick2` 依然引用上次声明的方法。引用没有发生改变，所以 `React.memo` 方法判断 `Button2` 不需要重新渲染。
 
 ## Case 2
 
@@ -99,7 +99,7 @@ const Case2: React.FC = () => {
 
 ### Button1 的渲染过程
 
-`onClick1` 虽然使用了 `useCallback`方法，但是每次输入时 `text` 值都发生了变化，使得`Button1`每次输入时都会进行渲染。相较于不使用 `useCallback` 方法，不仅没有减少渲染次数，而且每次渲染之前都需要额外地比较 `text` 的值前后是否一致，可以视为一种负优化。
+`onClick1` 虽然使用了 `useCallback`方法，但是每次输入时 `text` 值都发生了变化，使得 `Button1` 每次输入时都会进行渲染。相较于不使用 `useCallback` 方法，不仅没有减少渲染次数，而且每次渲染之前都需要额外地比较 `text` 的值前后是否一致，可以视为一种负优化。
 
 ### Button2 的渲染过程
 
