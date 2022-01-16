@@ -56,7 +56,7 @@ const HowToUseUseCallBack: React.FC = () => {
 
 当点击 `Button` 后会调用 `useState` 的 `set` 方法，来触发当前组件的渲染。
 
-### Button1/3 的渲染过程
+### Button1&3 的渲染过程
 
 在渲染时会声明一个新的 `onClick` 方法，使用了 `React.memo` 方法的 `Button` 组件会比较(===)新传入的和之前的 `onClick` 参数，由于是新声明的方法和两者的引用不同，所以会重新渲染。
 
@@ -99,7 +99,7 @@ const Case2: React.FC = () => {
 
 ### Button1 的渲染过程
 
-`onClick1` 虽然使用了 `useCallback`方法，但是每次输入时 `text` 值都发生了变化，使得 `Button1` 每次输入时都会进行渲染。相较于不使用 `useCallback` 方法，不仅没有减少渲染次数，而且每次渲染之前都需要额外地比较 `text` 的值前后是否一致，可以视为一种负优化。
+`onClick1` 虽然使用了 `useCallback` 方法，但是每次输入时 `text` 值都发生了变化，使得 `Button1` 每次输入时都会进行渲染。相较于不使用 `useCallback` 方法，不仅没有减少渲染次数，而且每次渲染之前都需要额外地比较 `text` 的值前后是否一致，可以视为一种负优化。
 
 ### Button2 的渲染过程
 
