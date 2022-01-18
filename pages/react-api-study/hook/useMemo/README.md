@@ -4,7 +4,7 @@
 
 ## Case 1
 
-```
+```js
 const Case: React.FC = () => {
   const [count, setCount] = useState(0);
   const [price, setPrice] = useState(0);

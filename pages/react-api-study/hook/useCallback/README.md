@@ -5,7 +5,7 @@
 
 ## Button 组件
 
-```
+```js
 const Button: React.FC<ButtonProps> = (props) => {
   const { onClick, children } = props;
   const time = new Date().getTime();
@@ -25,7 +25,7 @@ const Button: React.FC<ButtonProps> = (props) => {
 
 ## Case 1
 
-```
+```js
 const HowToUseUseCallBack: React.FC = () => {
   const [a, setA] = useState(0);
   const [b, setB] = useState(0);

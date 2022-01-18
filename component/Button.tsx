@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 interface ButtonProps {
   onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
@@ -8,7 +8,6 @@ interface ButtonProps {
 const Button: React.FC<ButtonProps> = (props) => {
   const { onClick, children } = props;
   const time = new Date().getTime();
-  console.log(`button render ${children}`);
 
   return (
     <button
