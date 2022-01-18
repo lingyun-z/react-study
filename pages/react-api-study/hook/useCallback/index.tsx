@@ -78,4 +78,4 @@ const HowToUseUseCallBack: React.FC = () => {
   );
 };
 
-export default HowToUseUseCallBack;
+export default React.memo(HowToUseUseCallBack);

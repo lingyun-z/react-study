@@ -1,7 +1,10 @@
-import React, { useState, useMemo, useCallback, useRef } from "react";
-import Button from "../../../../component/Button";
-import Text from "../../../../component/Text";
+# UseMemo
 
+`useMemo` 将方法的返回值保存值内存中，只有当其中的依赖发生变化才会重新计算该方法的返回值。`useMemo` 的返回值也可以包含函数，当返回一个函数时，其功能相当于 `useCallback`。
+
+## Case 1
+
+```
 const Case: React.FC = () => {
   const [count, setCount] = useState(0);
   const [price, setPrice] = useState(0);
@@ -20,14 +23,7 @@ const Case: React.FC = () => {
   }, [totalRef]);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        width: "16rem",
-        marginBottom: "2rem",
-      }}
-    >
+    <div>
       <input
         value={count}
         onChange={(event) => setCount(Number(event.target.value))}
@@ -43,13 +39,6 @@ const Case: React.FC = () => {
     </div>
   );
 };
+```
 
-const HowToUseUseUseMemo: React.FC = () => {
-  return (
-    <>
-      <Case />
-    </>
-  );
-};
-
-export default React.memo(HowToUseUseUseMemo);
+为 `total` 的计算，添加了 `useMemo` 方法。避免了因为点击 submit 按钮后，`setState` 方法触发的组建重新渲染时，`total` 进行不必要的计算。
