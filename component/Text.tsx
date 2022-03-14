@@ -1,16 +1,15 @@
-import React from "react";
+import React, { ReactNode } from "react";
 
 interface TextProps {
-  children?: string | number | React.ReactNode;
+  children: ReactNode;
 }
 
-const Text: React.FC<TextProps> = (props) => {
-  const { children } = props;
+const Text = (props: TextProps) => {
   const time = new Date().getTime();
 
   return (
     <p>
-      {children} {time}
+      {props.children} {time}
     </p>
   );
 };

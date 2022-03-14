@@ -44,7 +44,7 @@ const Case: React.FC = () => {
   );
 };
 
-const HowToUseUseUseMemo: React.FC = () => {
+const HowToUseUseMemo: React.FC = () => {
   return (
     <>
       <Case />
@@ -52,4 +52,4 @@ const HowToUseUseUseMemo: React.FC = () => {
   );
 };
 
-export default React.memo(HowToUseUseUseMemo);
+export default React.memo(HowToUseUseMemo);
