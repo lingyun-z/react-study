@@ -48,6 +48,12 @@ const HowToUseUseMemo: React.FC = () => {
   return (
     <>
       <Case />
+      {[1, 2, 3, 4].map((i) => (
+        <>
+          <div>{i}</div>
+          <div>{i}</div>
+        </>
+      ))}
     </>
   );
 };

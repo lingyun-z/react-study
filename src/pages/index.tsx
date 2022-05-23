@@ -1,4 +1,3 @@
-import styles from "../styles/Home.module.css";
 import NextLink from "next/link";
 
 export default function Home() {
