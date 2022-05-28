@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from "react";
-import Button from "../../../../component/Button";
+import Button from "../../../component/Button";
 
 const Case1: React.FC = () => {
   const [a, setA] = useState(0);
