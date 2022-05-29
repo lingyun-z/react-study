@@ -30,6 +30,14 @@ export default function Home() {
           </li>
         </ul>
       </ul>
+      <ul>
+        <li>demo</li>
+        <ul>
+          <li>
+            <NextLink href="/websocket/chat">websocket</NextLink>
+          </li>
+        </ul>
+      </ul>
     </div>
   );
 }

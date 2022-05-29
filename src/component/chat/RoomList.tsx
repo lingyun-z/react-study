@@ -2,9 +2,9 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useAppDispatch } from "../../lib/reduxHook";
 import request from "../../lib/request";
-import { setChatRoom } from "../../store/ChatSlice";
-import { ChatRoom } from "../../types";
-
+import { removeChatRoom, setChatRoom } from "../../store/ChatSlice";
+import { ChatRoom, WebSocketEvent } from "../../types";
+import socket from "../../lib/socket";
 interface FriendProps {
   room: ChatRoom;
 }
@@ -70,6 +70,25 @@ const RoomList = () => {
 
   useEffect(() => {
     fetchFriends();
+
+    socket.on(WebSocketEvent.USER_ONLINE, (payload) => {
+      console.log("userOnline", payload);
+
+      const { userId } = payload;
+      setRooms((prevState) => [...prevState, { id: userId, name: userId }]);
+    });
+
+    socket.on(WebSocketEvent.USER_OFFLINE, (payload) => {
+      console.log("userOffline", payload);
+
+      const { userId } = payload;
+      setRooms((prevState) => prevState.filter(({ id }) => id !== userId));
+    });
+
+    return () => {
+      socket.off(WebSocketEvent.USER_OFFLINE);
+      socket.off(WebSocketEvent.USER_ONLINE);
+    };
   }, []);
 
   return (
@@ -77,7 +96,6 @@ const RoomList = () => {
       {rooms.map((room) => (
         <Room key={room.id} room={room} />
       ))}
-      <button onClick={fetchFriends}>refresh</button>
     </div>
   );
 };

@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useAppSelector } from "../../lib/reduxHook";
 import socket from "../../lib/socket";
+import { WebSocketEvent } from "../../types";
 
 interface ChatMessage {
   from: string;
@@ -16,7 +17,7 @@ const ChatRoom = () => {
   const userName = useAppSelector((state) => state.authSlice.userName);
 
   const sendChatMessage = (to: string, message: any) => {
-    socket.emit("chat_message", { to, message });
+    socket.emit("chatMessage", { to, message });
   };
 
   const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,19 +30,19 @@ const ChatRoom = () => {
       sendChatMessage(room.id, value);
       setMessages((prevState) => [
         ...prevState,
-        { from: "self", message: value },
+        { from: userName, message: value },
       ]);
       setValue("");
     }
   };
 
   useEffect(() => {
-    socket.on("chat_message", (msg) => {
-      setMessages((prevState) => [...prevState, msg]);
+    socket.on(WebSocketEvent.CHAT_MESSAGE, (payload) => {
+      setMessages((prevState) => [...prevState, payload]);
     });
 
     return () => {
-      socket.off("chat_message");
+      socket.off(WebSocketEvent.CHAT_MESSAGE);
     };
   }, []);
 
@@ -111,14 +112,15 @@ const ChatRoom = () => {
               style={{
                 display: "flex",
                 margin: "0.5rem 0",
-                flexDirection: message.from === "self" ? "row-reverse" : "row",
+                flexDirection:
+                  message.from === userName ? "row-reverse" : "row",
               }}
             >
               <div
                 style={{
                   width: "2rem",
                   height: "2rem",
-                  background: message.from === "self" ? "#223344" : "#00aa44",
+                  background: message.from === userName ? "#223344" : "#00aa44",
                   borderRadius: "3px",
                 }}
               />
@@ -128,7 +130,7 @@ const ChatRoom = () => {
                   padding: "0.5rem",
                   borderRadius: "3px",
                   background:
-                    message.from === "self" ? "rgb(125,233,108)" : "white",
+                    message.from === userName ? "rgb(125,233,108)" : "white",
                 }}
               >
                 {message.message}

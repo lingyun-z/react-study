@@ -16,9 +16,13 @@ const todoSlice = createSlice({
     setChatRoom: (state, action) => {
       return { ...state, room: { ...action.payload } };
     },
+
+    removeChatRoom: (state, action) => {
+      return { ...state, room: { ...action.payload } };
+    },
   },
 });
 
-export const { setChatRoom } = todoSlice.actions;
+export const { setChatRoom, removeChatRoom } = todoSlice.actions;
 
 export default todoSlice.reducer;
