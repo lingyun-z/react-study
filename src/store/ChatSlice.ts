@@ -1,28 +1,36 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { ChatRoom } from "../types";
+import { ChatMessage, ChatRoom } from "../types";
 
 interface AuthState {
-  room: ChatRoom;
+  selectedRoom: ChatRoom;
+  roomMessage: Record<string, ChatMessage[]>;
 }
 
 const initialState: AuthState = {
-  room: null,
+  selectedRoom: null,
+  roomMessage: {},
 };
 
 const todoSlice = createSlice({
   name: "chat",
   initialState,
   reducers: {
-    setChatRoom: (state, action) => {
-      return { ...state, room: { ...action.payload } };
+    setChatRoom: (state, { payload }) => {
+      state.selectedRoom = payload;
+      if (!state.roomMessage[payload.id]) {
+        state.roomMessage[payload.id] = [];
+      }
     },
-
-    removeChatRoom: (state, action) => {
-      return { ...state, room: { ...action.payload } };
+    addMessage: (state, { payload: { id, message } }) => {
+      if (!state.roomMessage[id]) {
+        state.roomMessage[id] = [message];
+      } else {
+        state.roomMessage[id].unshift(message);
+      }
     },
   },
 });
 
-export const { setChatRoom, removeChatRoom } = todoSlice.actions;
+export const { setChatRoom, addMessage } = todoSlice.actions;
 
 export default todoSlice.reducer;

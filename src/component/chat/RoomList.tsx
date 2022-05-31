@@ -1,21 +1,21 @@
-import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { useAppDispatch } from "../../lib/reduxHook";
+import { useAppDispatch, useAppSelector } from "../../lib/reduxHook";
 import request from "../../lib/request";
-import { removeChatRoom, setChatRoom } from "../../store/ChatSlice";
-import { ChatRoom, WebSocketEvent } from "../../types";
 import socket from "../../lib/socket";
-interface FriendProps {
+import { setChatRoom } from "../../store/ChatSlice";
+import { ChatMessage, ChatRoom, WebSocketEvent } from "../../types";
+interface RoomProps {
   room: ChatRoom;
+  recentMessage: ChatMessage;
+  isSelectedRoom: boolean;
 }
 
-const Room = (props: FriendProps) => {
-  const { room } = props;
+const Room = (props: RoomProps) => {
+  const { room, recentMessage, isSelectedRoom } = props;
   const dispatch = useAppDispatch();
-  const router = useRouter();
+
   const clickHandler = () => {
     dispatch(setChatRoom(room));
-    router.push(`/websocket/chat/${room.id}`);
   };
 
   return (
@@ -23,8 +23,11 @@ const Room = (props: FriendProps) => {
       style={{
         display: "flex",
         height: "4rem",
+        width: "100%",
         padding: "0.5rem",
-        borderBottom: "1px solid #cccccc",
+        borderBottom: "1px solid #24272c",
+        cursor: "pointer",
+        background: isSelectedRoom ? "#3a3f45" : "inherit",
       }}
       onClick={clickHandler}
     >
@@ -32,9 +35,9 @@ const Room = (props: FriendProps) => {
         style={{
           height: "3rem",
           width: "3rem",
-          background: "#223344",
-          marginRight: "0.5rem",
+          background: "#ff3344",
           borderRadius: "5px",
+          flexShrink: 0,
         }}
       />
 
@@ -42,9 +45,23 @@ const Room = (props: FriendProps) => {
         style={{
           display: "flex",
           flexDirection: "column",
+          paddingLeft: "0.5rem",
+          flexGrow: 1,
+          overflow: "hidden",
         }}
       >
         <p style={{ margin: 0 }}>{room.name}</p>
+        <p
+          style={{
+            margin: 0,
+            color: "#999999",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {recentMessage?.content}
+        </p>
       </div>
     </div>
   );
@@ -52,6 +69,9 @@ const Room = (props: FriendProps) => {
 
 const RoomList = () => {
   const [rooms, setRooms] = useState<ChatRoom[]>([]);
+  const { selectedRoom, roomMessage } = useAppSelector(
+    (state) => state.chatSlice
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [isFailed, setIsFailed] = useState(false);
 
@@ -72,15 +92,11 @@ const RoomList = () => {
     fetchFriends();
 
     socket.on(WebSocketEvent.USER_ONLINE, (payload) => {
-      console.log("userOnline", payload);
-
       const { userId } = payload;
       setRooms((prevState) => [...prevState, { id: userId, name: userId }]);
     });
 
     socket.on(WebSocketEvent.USER_OFFLINE, (payload) => {
-      console.log("userOffline", payload);
-
       const { userId } = payload;
       setRooms((prevState) => prevState.filter(({ id }) => id !== userId));
     });
@@ -94,7 +110,12 @@ const RoomList = () => {
   return (
     <div>
       {rooms.map((room) => (
-        <Room key={room.id} room={room} />
+        <Room
+          key={room.id}
+          room={room}
+          recentMessage={roomMessage[room.id]?.[0]}
+          isSelectedRoom={selectedRoom?.id === room.id}
+        />
       ))}
     </div>
   );

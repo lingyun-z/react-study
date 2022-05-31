@@ -12,6 +12,8 @@ const ChatLayout = (props: ChatLayoutProps) => {
         display: "flex",
         flexDirection: "column",
         height: "100vh",
+        background: "#2e3238",
+        color: "#ffffff",
       }}
     >
       <div
@@ -21,7 +23,7 @@ const ChatLayout = (props: ChatLayoutProps) => {
           justifyContent: "center",
           flexShrink: 0,
           height: "3rem",
-          borderBottom: "1px solid #cccccc",
+          borderBottom: "1px solid #24272c",
         }}
       >
         <p style={{ margin: 0 }}>cHat</p>
@@ -34,7 +36,7 @@ const ChatLayout = (props: ChatLayoutProps) => {
       >
         {children}
       </div>
-      <div
+      {/* <div
         style={{
           display: "flex",
           alignItems: "center",
@@ -45,7 +47,7 @@ const ChatLayout = (props: ChatLayoutProps) => {
         }}
       >
         footer
-      </div>
+      </div> */}
     </div>
   );
 };

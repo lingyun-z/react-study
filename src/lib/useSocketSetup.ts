@@ -1,13 +1,12 @@
-import { useEffect, useMemo } from "react";
-import { useAppDispatch, useAppSelector } from "./reduxHook";
+import { useEffect } from "react";
 import socket from "./socket";
 
-interface ScoketSetupProps {
+interface SocketSetupProps {
   connectHandler?: () => void;
   errorHandler?: () => void;
 }
 
-const useScoketSetup = (props: ScoketSetupProps) => {
+const useSocketSetup = (props: SocketSetupProps) => {
   const { connectHandler, errorHandler } = props;
 
   useEffect(() => {
@@ -21,15 +20,15 @@ const useScoketSetup = (props: ScoketSetupProps) => {
       socket.on("connect", () => {
         connectHandler?.();
       });
-    }
 
-    return () => {
-      socket.off("connect");
-      socket.off("connect_error");
-    };
+      return () => {
+        socket.off("connect");
+        socket.off("connect_error");
+      };
+    }
   }, []);
 
   return socket;
 };
 
-export default useScoketSetup;
+export default useSocketSetup;

@@ -1,23 +1,18 @@
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { useAppSelector } from "../../lib/reduxHook";
+import React, { useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../lib/reduxHook";
 import socket from "../../lib/socket";
-import { WebSocketEvent } from "../../types";
-
-interface ChatMessage {
-  from: string;
-  message: string;
-}
+import { addMessage } from "../../store/ChatSlice";
 
 const ChatRoom = () => {
   const [value, setValue] = useState("");
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const router = useRouter();
-  const { room } = useAppSelector((state) => state.chatSlice);
+  const dispatch = useAppDispatch();
+  const { selectedRoom, roomMessage } = useAppSelector(
+    (state) => state.chatSlice
+  );
   const userName = useAppSelector((state) => state.authSlice.userName);
 
-  const sendChatMessage = (to: string, message: any) => {
-    socket.emit("chatMessage", { to, message });
+  const sendChatMessage = (to: string, content: string) => {
+    socket.emit("chatMessage", { to, content });
   };
 
   const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,30 +22,22 @@ const ChatRoom = () => {
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (value) {
-      sendChatMessage(room.id, value);
-      setMessages((prevState) => [
-        ...prevState,
-        { from: userName, message: value },
-      ]);
+      sendChatMessage(selectedRoom.id, value);
+      dispatch(
+        addMessage({
+          id: selectedRoom.id,
+          message: {
+            content: value,
+            timestamp: new Date().getTime(),
+            from: userName,
+          },
+        })
+      );
       setValue("");
     }
   };
 
-  useEffect(() => {
-    socket.on(WebSocketEvent.CHAT_MESSAGE, (payload) => {
-      setMessages((prevState) => [...prevState, payload]);
-    });
-
-    return () => {
-      socket.off(WebSocketEvent.CHAT_MESSAGE);
-    };
-  }, []);
-
-  const backBtnClickHandler = () => {
-    router.push("/websocket/chat");
-  };
-
-  return (
+  return selectedRoom ? (
     <div
       style={{
         display: "flex",
@@ -60,7 +47,6 @@ const ChatRoom = () => {
     >
       <div
         style={{
-          position: "relative",
           flexShrink: 0,
           display: "flex",
           alignItems: "center",
@@ -69,75 +55,57 @@ const ChatRoom = () => {
           borderBottom: "1px solid #cccccc",
         }}
       >
-        <div
-          style={{
-            position: "absolute",
-            left: "0.5rem",
-            cursor: "pointer",
-          }}
-          onClick={backBtnClickHandler}
-        >
-          back
-        </div>
         <p
           style={{
             margin: 0,
           }}
         >
-          {room?.name}
+          {selectedRoom?.name}
         </p>
       </div>
       <div
         style={{
           flexGrow: 1,
           display: "flex",
-          flexDirection: "column",
+          flexDirection: "column-reverse",
           width: "100%",
+          padding: "0 0.75rem",
           background: "#eeeeee",
+          overflowX: "auto",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-end",
-            width: "100%",
-            flexGrow: "1",
-            padding: "0.5rem",
-          }}
-        >
-          {messages.map((message, index) => (
+        {roomMessage[selectedRoom.id].map((message, index) => (
+          <div
+            key={index}
+            style={{
+              display: "flex",
+              margin: "0.5rem 0",
+              flexDirection: message.from === userName ? "row-reverse" : "row",
+            }}
+          >
             <div
-              key={index}
               style={{
-                display: "flex",
-                margin: "0.5rem 0",
-                flexDirection:
-                  message.from === userName ? "row-reverse" : "row",
+                width: "2rem",
+                height: "2rem",
+                background: message.from === userName ? "#223344" : "#00aa44",
+                borderRadius: "3px",
+                flexShrink: 0,
+              }}
+            />
+            <div
+              style={{
+                margin: "0 0.5rem",
+                padding: "0.5rem",
+                borderRadius: "3px",
+                background:
+                  message.from === userName ? "rgb(125,233,108)" : "white",
+                wordBreak: "break-word",
               }}
             >
-              <div
-                style={{
-                  width: "2rem",
-                  height: "2rem",
-                  background: message.from === userName ? "#223344" : "#00aa44",
-                  borderRadius: "3px",
-                }}
-              />
-              <div
-                style={{
-                  margin: "0 0.5rem",
-                  padding: "0.5rem",
-                  borderRadius: "3px",
-                  background:
-                    message.from === userName ? "rgb(125,233,108)" : "white",
-                }}
-              >
-                {message.message}
-              </div>
+              {message.content}
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
       <form onSubmit={submitHandler}>
         <div
@@ -160,6 +128,17 @@ const ChatRoom = () => {
           <button type="submit">Send!</button>
         </div>
       </form>
+    </div>
+  ) : (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        color: "#999999",
+      }}
+    >
+      没有选择聊天
     </div>
   );
 };
