@@ -4,6 +4,7 @@ import request from "../../lib/request";
 import socket from "../../lib/socket";
 import { setChatRoom } from "../../store/ChatSlice";
 import { ChatMessage, ChatRoom, WebSocketEvent } from "../../types";
+
 interface RoomProps {
   room: ChatRoom;
   recentMessage: ChatMessage;

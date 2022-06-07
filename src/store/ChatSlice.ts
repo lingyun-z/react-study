@@ -28,9 +28,12 @@ const todoSlice = createSlice({
         state.roomMessage[id].unshift(message);
       }
     },
+    initMessage: (state, { payload: { id, messages } }) => {
+      state.roomMessage[id] = messages;
+    },
   },
 });
 
-export const { setChatRoom, addMessage } = todoSlice.actions;
+export const { setChatRoom, addMessage, initMessage } = todoSlice.actions;
 
 export default todoSlice.reducer;

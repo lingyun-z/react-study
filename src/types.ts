@@ -9,6 +9,11 @@ export interface ChatMessage {
   from: string;
 }
 
+export enum RequestStatus {
+  IDLE = "idle",
+  PENDING = "pending",
+}
+
 export enum WebSocketEvent {
   CHAT_MESSAGE = "chatMessage",
   USER_OFFLINE = "userOffline",

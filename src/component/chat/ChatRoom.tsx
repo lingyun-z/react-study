@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { MessageValue, useChatMessageIDB } from "../../lib/IDB/useIDB";
 import { useAppDispatch, useAppSelector } from "../../lib/reduxHook";
 import socket from "../../lib/socket";
-import { addMessage } from "../../store/ChatSlice";
+import { addMessage, initMessage } from "../../store/ChatSlice";
 
 const ChatRoom = () => {
   const [value, setValue] = useState("");
@@ -10,9 +11,10 @@ const ChatRoom = () => {
     (state) => state.chatSlice
   );
   const userName = useAppSelector((state) => state.authSlice.userName);
+  const { saveMessage, getRoomMessage } = useChatMessageIDB();
 
-  const sendChatMessage = (to: string, content: string) => {
-    socket.emit("chatMessage", { to, content });
+  const sendChatMessage = (message: MessageValue) => {
+    socket.emit("chatMessage", message);
   };
 
   const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,20 +24,34 @@ const ChatRoom = () => {
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (value) {
-      sendChatMessage(selectedRoom.id, value);
+      const message = {
+        content: value,
+        timestamp: new Date().getTime(),
+        from: userName,
+        to: selectedRoom.id,
+      };
+      saveMessage(message.timestamp, message, message.to);
+      sendChatMessage(message);
       dispatch(
         addMessage({
           id: selectedRoom.id,
-          message: {
-            content: value,
-            timestamp: new Date().getTime(),
-            from: userName,
-          },
+          message,
         })
       );
       setValue("");
     }
   };
+
+  const initRoom = async () => {
+    if (selectedRoom?.id) {
+      const result = await getRoomMessage(selectedRoom.id);
+      dispatch(initMessage({ id: selectedRoom.id, messages: result }));
+    }
+  };
+
+  useEffect(() => {
+    initRoom();
+  }, [selectedRoom?.id]);
 
   return selectedRoom ? (
     <div
