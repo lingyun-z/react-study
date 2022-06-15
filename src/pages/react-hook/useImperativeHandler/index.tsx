@@ -6,8 +6,8 @@ import React, {
   useRef,
   useState,
 } from "react";
-import Button from "../../../../component/Button";
-import Text from "../../../../component/Text";
+import Button from "../../../component/Button";
+import Text from "../../../component/Text";
 
 interface InputRef {
   focus: () => void;

@@ -1,6 +1,6 @@
-# UseMemo
+# useMemo
 
-`useMemo` 将方法的返回值保存值内存中，只有当其中的依赖发生变化才会重新计算该方法的返回值。`useMemo` 的返回值也可以包含函数，当返回一个函数时，其功能相当于 `useCallback`。
+`useMemo` 将方法的返回值保存至内存中，只有当重新渲染时其中的依赖发生变化才会重新同步计算该方法的返回值。`useMemo` 的返回值也可以包含函数、对象，当返回一个函数时，其功能相当于 `useCallback`。
 
 ## Case 1
 
@@ -41,4 +41,4 @@ const Case: React.FC = () => {
 };
 ```
 
-为 `total` 的计算，添加了 `useMemo` 方法。避免了因为点击 submit 按钮后，`setState` 方法触发的组建重新渲染时，`total` 进行不必要的计算。
+为 `total` 的计算，添加了 `useMemo` 方法。避免了因为点击 submit 按钮后，`setState` 触发组件重新渲染时，`total` 进行不必要的计算。

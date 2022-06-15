@@ -1,6 +1,6 @@
 # useCallBack
 
-`useCallBack` 将方法储存到内存中，只有当依赖值发生变化时，才会重新声明函数，避免组建重新渲染时不必要的声明开销。通常用于组件中方法参数的传递，减少不必要的渲染，以此来优化组件的性能。
+`useCallBack` 将方法储存到内存中，只有当依赖值发生变化时，才会重新声明函数，避免组件重新渲染时不必要的声明开销。通常用于组件中方法参数的传递，减少不必要的渲染，以此来优化组件的性能。
 需要注意的是，判断依赖值变化也需要额外开销，所以并不是所有的方法都需要使用 `useCallBack` 方法。
 
 ## Button 组件
@@ -67,7 +67,7 @@ const HowToUseUseCallBack: React.FC = () => {
 
 ## Case 2
 
-```
+```js
 const Case2: React.FC = () => {
   const [text, setText] = useState("");
   const textRef = useRef("");

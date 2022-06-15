@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import Button from "../../../../component/Button";
+import Button from "../../../component/Button";
 
 const Case: React.FC = () => {
   const [count, setCount] = useState(0);

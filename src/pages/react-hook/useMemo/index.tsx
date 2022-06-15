@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback, useRef } from "react";
-import Button from "../../../../component/Button";
-import Text from "../../../../component/Text";
+import Button from "../../../component/Button";
+import Text from "../../../component/Text";
 
 const Case: React.FC = () => {
   const [count, setCount] = useState(0);

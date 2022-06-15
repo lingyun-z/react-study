@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import Text from "../../../../component/Text";
+import Text from "../../../component/Text";
 
 interface CaseContextProps {
   value: string;
