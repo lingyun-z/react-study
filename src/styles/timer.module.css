@@ -3,6 +3,31 @@
   100% {opacity: 1;}
 }
 
+@keyframes open {
+  0% {transform: rotateX(180deg);}
+  100% {transform: rotateX(0deg);}
+}
+
+@keyframes close {
+  0% {transform: rotateX(0deg);}
+  100% {transform: rotateX(-180deg);}
+}
+
+.open {
+  animation-name: open;
+  animation-duration: .7s;
+  animation-iteration-count: 1;
+}
+
+.close {
+  animation-name: close;
+  animation-duration: .7s;
+  animation-iteration-count: 1;
+}
+
+
+
+
 .colon {
   animation-name: disappear;
   animation-duration: 1s;

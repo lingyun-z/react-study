@@ -6,10 +6,11 @@ interface HalfDigitProps {
   zIndex?: number;
   deg?: number;
   needTransition?: boolean;
+  className?: string;
 }
 
 const TopHalfDigit = React.memo(function TopHalfDigit(props: HalfDigitProps) {
-  const { children, deg = 0, zIndex = 0, needTransition } = props;
+  const { children, deg = 0, zIndex = 0, needTransition, ...rest } = props;
 
   return (
     <div
@@ -24,6 +25,7 @@ const TopHalfDigit = React.memo(function TopHalfDigit(props: HalfDigitProps) {
         backfaceVisibility: "hidden",
         zIndex,
       }}
+      {...rest}
     >
       <div
         style={{
@@ -45,7 +47,13 @@ const TopHalfDigit = React.memo(function TopHalfDigit(props: HalfDigitProps) {
 const BottomHalfDigit = React.memo(function BottomHalfDigit(
   props: HalfDigitProps
 ) {
-  const { children, deg = 0, zIndex = 0, needTransition = false } = props;
+  const {
+    children,
+    deg = 0,
+    zIndex = 0,
+    needTransition = false,
+    ...rest
+  } = props;
 
   return (
     <div
@@ -61,6 +69,7 @@ const BottomHalfDigit = React.memo(function BottomHalfDigit(
         backfaceVisibility: "hidden",
         zIndex,
       }}
+      {...rest}
     >
       <div
         style={{
@@ -81,36 +90,26 @@ const BottomHalfDigit = React.memo(function BottomHalfDigit(
   );
 });
 
-const Digit = (props) => {
+interface DigitProps {
+  number: number;
+}
+
+const Digit = (props: DigitProps) => {
   const { number } = props;
-  const [numberA, setNumberA] = useState(number);
-  const [numberB, setNumberB] = useState(number);
-  const [status, setStatus] = useState(0);
-  const { cardStatus, needTransition } = useMemo(
-    () => ({
-      cardStatus: [
-        { deg: status === 3 ? -180 : 0, zIndex: status > 1 ? 1 : 0 },
-        { deg: status === 0 ? 180 : 0, zIndex: status === 1 ? 1 : 0 },
-        { deg: status === 1 ? -180 : 0, zIndex: status === 0 ? 1 : 0 },
-        { deg: status === 2 ? 180 : 0, zIndex: status === 3 ? 1 : 0 },
-      ],
-      needTransition: status === 1 || status === 3,
-    }),
-    [status]
-  );
+  const [currentNumber, setCurrentNumber] = useState(number);
+  const [reset, setReset] = useState(true);
 
   useEffect(() => {
-    if (status === 1 || status === 2) {
-      setNumberB(number);
-      setStatus(3);
-    } else {
-      setNumberA(number);
-      setStatus(1);
-    }
-
-    const timeout = setTimeout(() => {
-      setStatus((prevState) => (prevState + 1) % 4);
-    }, 500);
+    setReset(false);
+    let timeout: NodeJS.Timeout;
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        setReset(true);
+        timeout = setTimeout(() => {
+          setCurrentNumber(number);
+        }, 600);
+      });
+    });
 
     return () => {
       clearTimeout(timeout);
@@ -123,7 +122,7 @@ const Digit = (props) => {
         style={{
           width: "5rem",
           height: "8rem",
-          perspective: "250px",
+          perspective: "300px",
         }}
       >
         <div
@@ -131,35 +130,15 @@ const Digit = (props) => {
             transformStyle: "preserve-3d",
           }}
         >
-          <TopHalfDigit
-            deg={cardStatus[0].deg}
-            zIndex={cardStatus[0].zIndex}
-            needTransition={needTransition}
-          >
-            {numberA}
-          </TopHalfDigit>
-          <BottomHalfDigit
-            deg={cardStatus[1].deg}
-            zIndex={cardStatus[1].zIndex}
-            needTransition={needTransition}
-          >
-            {numberA}
+          <TopHalfDigit>{number}</TopHalfDigit>
+          <BottomHalfDigit deg={-180} className={reset ? styles.open : ""}>
+            {number}
           </BottomHalfDigit>
 
-          <TopHalfDigit
-            deg={cardStatus[2].deg}
-            zIndex={cardStatus[2].zIndex}
-            needTransition={needTransition}
-          >
-            {numberB}
+          <TopHalfDigit className={reset ? styles.close : ""}>
+            {currentNumber}
           </TopHalfDigit>
-          <BottomHalfDigit
-            deg={cardStatus[3].deg}
-            zIndex={cardStatus[3].zIndex}
-            needTransition={needTransition}
-          >
-            {numberB}
-          </BottomHalfDigit>
+          <BottomHalfDigit>{currentNumber}</BottomHalfDigit>
         </div>
       </div>
     </>
